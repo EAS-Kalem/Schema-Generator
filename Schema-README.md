@@ -1,0 +1,1 @@
+"\nAnsible Examples\n----------------\n\nThis repository contains examples and best practices for building Ansible Playbooks.\n\n"
