@@ -1,1 +1,0 @@
-"{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"make\": {\n      \"type\": \"string\"\n    },\n    \"model\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\n    \"make\",\n    \"model\"\n  ]\n}\n"
