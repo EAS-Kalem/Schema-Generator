@@ -1,37 +1,47 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/go-playground/validator/v10"
-	"github.com/Enterprise-Automation/lms-schema-generator-app/pkg/models"
+	"fmt"
+	"regexp"
+	"strings"
 	"github.com/Enterprise-Automation/lms-schema-generator-app/pkg/controllers"
+	"github.com/Enterprise-Automation/lms-schema-generator-app/pkg/models"
 )
-var fileName = "motorbikes.json"
-var app = fiber.New()
+
 func main() {
-    
-	
-	newFileName := controllers.GetSchema(fileName)
-	controllers.VerifySyntax(newFileName)
-	// controllers.FileContents(Service, Action)
+	Microservices1 := controllers.Microservices()
+	var structInstances []models.RespR // Slice 
+	for _, microsvc := range Microservices1 {
+		Handlers1 := controllers.Handlers(microsvc.Name)
+		for _, hndlr := range Handlers1 {
+			re := regexp.MustCompile(`_`)
+			resultString := re.ReplaceAllString(hndlr.Name, " ")
+			camelCase := UpperCase(resultString)
+			filter := strings.ReplaceAll(camelCase, " ", "")
+			filter1 := strings.ReplaceAll(filter, ".go", "")
+			filter2 := strings.ReplaceAll(filter1, ".Go", "")
+			Args1 := controllers.Args(microsvc.Name, hndlr.Name)
+			stringSlice := strings.Split(Args1, ",")
 
-    app.Get("/", func(c *fiber.Ctx) error {
-        return c.SendString("Thank god it works 🙏")
-    })
-
-    app.Post("/", controllers.ValidateSchema, func(c *fiber.Ctx) error {
-        body := new(models.Schema)
-        c.BodyParser(&body)
-        return c.Status(fiber.StatusOK).JSON(body)
-    })
-
-    app.Listen(":3000")
+			myStructInstance := models.RespR{
+				Service: microsvc.Name,
+				Handlers: models.HandlersR{
+					FileName:    hndlr.Name,
+					ServiceName: filter2,
+					Args:        stringSlice,
+				},
+			}
+			structInstances = append(structInstances, myStructInstance)
+		}
+	}
+	fmt.Println(structInstances)
 }
 
+func UpperCase(s string) string {
+	words := strings.Fields(s)
+	for i, word := range words {
+		words[i] = strings.Title(word)
+	}
+	return strings.Join(words, " ")
+}
 
-
-var Validator = validator.New()
-
-
-
-  

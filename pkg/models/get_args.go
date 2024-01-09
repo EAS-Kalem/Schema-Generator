@@ -1,6 +1,6 @@
 package models
 
-type FileContains struct {
+type Args struct {
 	Name        string `json:"name"`
 	Path        string `json:"path"`
 	Sha         string `json:"sha"`
